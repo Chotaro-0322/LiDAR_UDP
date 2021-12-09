@@ -1,0 +1,5 @@
+  File "/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages/lidar_udp_catch/lidar_udp_catch.py", line 29
+    r += "\x{02x}".format(array[i])
+        ^
+SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 0-1: truncated \xXX escape
+

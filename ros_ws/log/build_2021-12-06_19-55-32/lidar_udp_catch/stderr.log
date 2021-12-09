@@ -1,0 +1,5 @@
+  File "/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages/lidar_udp_catch/lidar_udp_catch.py", line 35
+    print("\n")
+        ^
+SyntaxError: invalid syntax
+

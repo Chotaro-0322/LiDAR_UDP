@@ -1,0 +1,24 @@
+[0.345s] Invoking command in '/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/src/lidar_udp_catch': PYTHONPATH=/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/lidar_udp_catch build --build-base /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/build install --prefix /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch --record /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/install.log --single-version-externally-managed
+[0.641s] running egg_info
+[0.642s] writing ../../build/lidar_udp_catch/lidar_udp_catch.egg-info/PKG-INFO
+[0.642s] writing dependency_links to ../../build/lidar_udp_catch/lidar_udp_catch.egg-info/dependency_links.txt
+[0.642s] writing entry points to ../../build/lidar_udp_catch/lidar_udp_catch.egg-info/entry_points.txt
+[0.642s] writing requirements to ../../build/lidar_udp_catch/lidar_udp_catch.egg-info/requires.txt
+[0.642s] writing top-level names to ../../build/lidar_udp_catch/lidar_udp_catch.egg-info/top_level.txt
+[0.671s] reading manifest file '../../build/lidar_udp_catch/lidar_udp_catch.egg-info/SOURCES.txt'
+[0.672s] writing manifest file '../../build/lidar_udp_catch/lidar_udp_catch.egg-info/SOURCES.txt'
+[0.672s] running build
+[0.672s] running build_py
+[0.672s] copying lidar_udp_catch/lidar_udp_catch.py -> /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/build/lib/lidar_udp_catch
+[0.673s] running install
+[0.673s] running install_lib
+[0.674s] copying /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/build/lib/lidar_udp_catch/lidar_udp_catch.py -> /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages/lidar_udp_catch
+[0.675s] byte-compiling /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages/lidar_udp_catch/lidar_udp_catch.py to lidar_udp_catch.cpython-36.pyc
+[0.675s] running install_data
+[0.676s] running install_egg_info
+[0.677s] removing '/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages/lidar_udp_catch-0.0.0-py3.6.egg-info' (and everything under it)
+[0.677s] Copying ../../build/lidar_udp_catch/lidar_udp_catch.egg-info to /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages/lidar_udp_catch-0.0.0-py3.6.egg-info
+[0.678s] running install_scripts
+[0.694s] Installing lidar_udp_catch script to /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/lidar_udp_catch
+[0.694s] writing list of installed files to '/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/install.log'
+[0.712s] Invoked command in '/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/src/lidar_udp_catch' returned '0': PYTHONPATH=/home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch/lib/python3.6/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/lidar_udp_catch build --build-base /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/build install --prefix /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/install/lidar_udp_catch --record /home/itolab-chotaro/HDD/SBIR-sit/ros_ws/build/lidar_udp_catch/install.log --single-version-externally-managed
