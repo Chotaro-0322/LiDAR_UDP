@@ -11,7 +11,16 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  pcl_conversions
 )
+
+find_package(PCL REQUIRED)
+
+include_directories(${PCL_include_DIRS})
+
+link_directories(${PCL_LIBRARY_DIRS})
+
+add_definitions(${PCL_DEFINITIONS})
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -133,7 +142,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/lidar_udp_catch_node.cpp)
+add_executable(lidar_udp_catch src/lidar_udp_catch.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,9 +155,10 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(lidar_udp_catch
+  ${catkin_LIBRARIES}
+  ${PCL_LIBARARIES}
+)
 
 #############
 ## Install ##

@@ -1,0 +1,2 @@
+lidar_udp_catch
+-DCATKIN_DEVEL_PREFIX=/home/itolab-chotaro/HDD/SBIR-sit/roscpp_ws/devel -DCMAKE_INSTALL_PREFIX=/home/itolab-chotaro/HDD/SBIR-sit/roscpp_ws/install -G Unix Makefiles

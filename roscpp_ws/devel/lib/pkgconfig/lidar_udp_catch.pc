@@ -1,0 +1,8 @@
+prefix=/home/itolab-chotaro/HDD/SBIR-sit/roscpp_ws/devel
+
+Name: lidar_udp_catch
+Description: Description of lidar_udp_catch
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
