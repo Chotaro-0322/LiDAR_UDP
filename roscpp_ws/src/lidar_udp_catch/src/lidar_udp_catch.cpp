@@ -65,10 +65,14 @@ class LiDARUdp{
         float distance_m;
         float intensity;
         float omega;
+        float alpha_half;
         float alpha;
         float x;
         float y;
         float z;
+        // float x_half;
+        // float y_half;
+        // float z_half;
         int num_ffff = 0;
         std::vector<float> azimuth_vec;
         std::vector<float> lidar_X;
@@ -85,7 +89,7 @@ class LiDARUdp{
             addr.sin_addr.s_addr = inet_addr(address.c_str());
             addr.sin_port = htons(port);
 
-            lidar_pub = nh.advertise<sensor_msgs::PointCloud2>("/points_raw", 1);
+            lidar_pub = nh.advertise<sensor_msgs::PointCloud2>("/rslidar_points", 1);
     }
 
     void LiDARUdp::udp_send(unsigned char *word, int buf_size)
@@ -115,6 +119,8 @@ class LiDARUdp{
             azimuth_deg = (buf[current_binary] << 8 | buf[current_binary + 1] ) * 0.01;
             
             current_binary += azimuth_size;
+            
+            azimuth_vec.push_back(azimuth_deg);
 
             for(channel = 0; channel < number_of_velodyne; channel++){
                 // 1ポイント : 3byte
@@ -126,21 +132,40 @@ class LiDARUdp{
                     // intensity (0 ~ 255)
                 
                     intensity = buf[current_binary + 2];
-                    
-                    azimuth_vec.push_back(azimuth_deg);
 
                     // if (channel > number_of_velodyne){
                     //     omega = laser_angle_list[channel - number_of_velodyne] * M_PI / 180;
                     // }else{
                     //     omega = laser_angle_list[channel] * M_PI / 180;
                     // }
+
                   
                     omega = laser_angle_list[channel] * M_PI / 180;
+                    
                     alpha = azimuth_deg * M_PI / 180;
-
                     x = distance_m * cos(omega) * sin(alpha);
                     y = distance_m * cos(omega) * cos(alpha);
                     z = distance_m * sin(omega);
+
+                    // 一周前の点群から補間(前の点群との間の点を追加)
+                    // lidar_X.push_back((x + lidar_X[-1]) / 2);
+                    // lidar_Y.push_back((y + lidar_Y[-1]) / 2);
+                    // lidar_Z.push_back((z + lidar_Z[-1]) / 2);
+                    // lidar_I.push_back(intensity);
+
+                    // データを格納
+                    // if (lidar_X.size() > 1){
+                    //     x_half = (x + lidar_X[lidar_X.size() - 1]) / 2;
+                    //     y_half = (y + lidar_Y[lidar_Y.size() - 1]) / 2;
+                    //     z_half = (z + lidar_Z[lidar_Z.size() - 1]) / 2;
+                    //     if (x_half < 0.1 & y_half < 0.1 & z_half < 0.1){
+                    //         lidar_X.push_back((x + lidar_X[lidar_X.size() - 1]) / 2);
+                    //         lidar_Y.push_back((y + lidar_Y[lidar_Y.size() - 1]) / 2);
+                    //         lidar_Z.push_back((z + lidar_Z[lidar_Z.size() - 1]) / 2);
+                    //         lidar_I.push_back(intensity);
+                    //         // printf("lidar_x : %d", lidar_X[int(lidar_X.size()) - 1]);
+                    //     }
+                    // }
 
                     // データを格納
                     lidar_X.push_back(x);
@@ -155,7 +180,7 @@ class LiDARUdp{
                 // if(lidar_X.size() > max_size_lidarvec * xyz_or_xyzi_size * child_block_size){
                 // if((lidar_X.size()/2) >= (max_size_lidarvec * number_of_velodyne)){
                 if((lidar_X.size() + num_ffff) >= max_size_lidarvec * number_of_velodyne){
-                    while (lidar_X.size() % number_of_velodyne != 0){
+                    while ((lidar_X.size() % (number_of_velodyne)) != 0){
                         // パディング
                         lidar_X.push_back(0);
                         lidar_Y.push_back(0);
@@ -163,14 +188,14 @@ class LiDARUdp{
                         lidar_I.push_back(0);
                     }
                     // printf("lidar size : %d", lidar_X.size() * 4);
-                    printf("lidar_X + num_ffff : %d\n", lidar_X.size()+num_ffff);
-                    printf("lidar_X.size() : %d\n", lidar_X.size());
-                    printf("num_ffff : %d\n", num_ffff);
+                    // printf("lidar_X + num_ffff : %d\n", lidar_X.size()+num_ffff);
+                    // printf("lidar_X.size() : %d\n", lidar_X.size());
+                    // printf("num_ffff : %d\n", num_ffff);
 
                     // for (size_t i = 0; i < azimuth_vec.size(); i++){
                     //     std::cout << azimuth_vec[i] << " ";
                     // }
-                    std::cout << "\n\n" << std::endl;
+                    // std::cout << "\n\n" << std::endl;
                     // printf("lidar_x size : %d", lidar_X.size());
                     lidar_pushback();
                     lidar_X.clear();
@@ -207,7 +232,7 @@ class LiDARUdp{
         sensor_msgs::PointCloud2 result_cloud_msg;
         pcl::toROSMsg(*points_XYZI, result_cloud_msg);
         result_cloud_msg.header.stamp = ros::Time::now();
-        result_cloud_msg.header.frame_id = "world";
+        result_cloud_msg.header.frame_id = "rslidar";
         result_cloud_msg.height = number_of_velodyne;//number_of_velodyne;
         result_cloud_msg.width = lidar_X.size() / number_of_velodyne; //lidar_X.size() * 4 / number_of_velodyne;
         result_cloud_msg.fields[0].name = "x";
