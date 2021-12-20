@@ -1,3 +1,4 @@
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -43,7 +44,7 @@ class LiDARUdp{
         ros::Publisher lidar_pub;
 
         // parameter
-        int data_start_pos = 42;
+        int data_start_pos = 0;
         int headffee_size = 2;
         int azimuth_size = 2;
         int child_block_size = 2;
@@ -89,7 +90,7 @@ class LiDARUdp{
             addr.sin_addr.s_addr = inet_addr(address.c_str());
             addr.sin_port = htons(port);
 
-            lidar_pub = nh.advertise<sensor_msgs::PointCloud2>("/rslidar_points", 1);
+            lidar_pub = nh.advertise<sensor_msgs::PointCloud2>("/points_raw", 1);
     }
 
     void LiDARUdp::udp_send(unsigned char *word, int buf_size)
@@ -116,7 +117,7 @@ class LiDARUdp{
             // azimuth_degの計算
             // azimuth [deg]
             // 00101010　と　00011111の場合, "00101010 00011111" になる. (前のバイトを8bit分ずらす <ビッグエンディアン>)
-            azimuth_deg = (buf[current_binary] << 8 | buf[current_binary + 1] ) * 0.01;
+            azimuth_deg = (buf[current_binary] | buf[current_binary + 1] << 8) * 0.01;
             
             current_binary += azimuth_size;
             
@@ -126,9 +127,9 @@ class LiDARUdp{
                 // 1ポイント : 3byte
                 // distance [m]
                 // printf("azimuth deg : %f\n", azimuth_deg);
-                if ((buf[current_binary] << 8 | buf[current_binary + 1]) != 0b1111111111111111)
+                if ((buf[current_binary] | buf[current_binary + 1] << 8) != 0b1111111111111111)
                 {
-                    distance_m = (buf[current_binary] << 8 | buf[current_binary + 1]) * 0.01;
+                    distance_m = (buf[current_binary] | buf[current_binary + 1] << 8) * 2 * 0.01;
                     // intensity (0 ~ 255)
                 
                     intensity = buf[current_binary + 2];
@@ -237,9 +238,9 @@ class LiDARUdp{
         sensor_msgs::PointCloud2 result_cloud_msg;
         pcl::toROSMsg(*points_XYZI, result_cloud_msg);
         result_cloud_msg.header.stamp = ros::Time::now();
-        result_cloud_msg.header.frame_id = "rslidar";
-        result_cloud_msg.height = number_of_velodyne;//number_of_velodyne;
-        result_cloud_msg.width = lidar_X.size() / number_of_velodyne; //lidar_X.size() * 4 / number_of_velodyne;
+        result_cloud_msg.header.frame_id = "velodyne";
+        result_cloud_msg.height = 1;//number_of_velodyne;
+        result_cloud_msg.width = lidar_X.size(); //lidar_X.size() * 4 / number_of_velodyne;
         result_cloud_msg.fields[0].name = "x";
         result_cloud_msg.fields[0].offset = 0;
         result_cloud_msg.fields[0].datatype = 7;

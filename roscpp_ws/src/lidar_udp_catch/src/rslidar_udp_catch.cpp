@@ -1,3 +1,4 @@
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -89,7 +90,7 @@ class LiDARUdp{
             addr.sin_addr.s_addr = inet_addr(address.c_str());
             addr.sin_port = htons(port);
 
-            lidar_pub = nh.advertise<sensor_msgs::PointCloud2>("/rslidar_points", 1);
+            lidar_pub = nh.advertise<sensor_msgs::PointCloud2>("/rslidar_points", 10);
     }
 
     void LiDARUdp::udp_send(unsigned char *word, int buf_size)
@@ -201,7 +202,8 @@ class LiDARUdp{
                     // }
                     // std::cout << "\n\n" << std::endl;
                     // printf("lidar_x size : %d", lidar_X.size());
-
+                    // printf("heeeeee");
+                    std::cout << "heee" << std::endl;
                     lidar_pushback();
                     lidar_X.clear();
                     lidar_Y.clear();
@@ -230,38 +232,44 @@ class LiDARUdp{
             pt.x = lidar_X[i];
             pt.y = lidar_Y[i];
             pt.z = lidar_Z[i];
-            pt.intensity = lidar_I.at(i);
+            pt.intensity = lidar_I[i];
             points_XYZI->push_back(pt);
         }
 
-        sensor_msgs::PointCloud2 result_cloud_msg;
-        pcl::toROSMsg(*points_XYZI, result_cloud_msg);
-        result_cloud_msg.header.stamp = ros::Time::now();
-        result_cloud_msg.header.frame_id = "rslidar";
-        result_cloud_msg.height = number_of_velodyne;//number_of_velodyne;
-        result_cloud_msg.width = lidar_X.size() / number_of_velodyne; //lidar_X.size() * 4 / number_of_velodyne;
-        result_cloud_msg.fields[0].name = "x";
-        result_cloud_msg.fields[0].offset = 0;
-        result_cloud_msg.fields[0].datatype = 7;
-        result_cloud_msg.fields[0].count = 1; //lidar_X.size();
-        result_cloud_msg.fields[1].name = "y";
-        result_cloud_msg.fields[1].offset = 4;
-        result_cloud_msg.fields[1].datatype = 7;
-        result_cloud_msg.fields[1].count = 1; //lidar_Y.size();
-        result_cloud_msg.fields[2].name = "z";
-        result_cloud_msg.fields[2].offset = 8;
-        result_cloud_msg.fields[2].datatype = 7;
-        result_cloud_msg.fields[2].count = 1; //lidar_Z.size();
-        result_cloud_msg.fields[3].name = "intensity";
-        result_cloud_msg.fields[3].offset = 16;
-        result_cloud_msg.fields[3].datatype = 7;
-        result_cloud_msg.fields[3].count = 1; //lidar_I.size();
-        result_cloud_msg.point_step = 32;
-        // result_cloud_msg.row_step = 56700;//lidar_X.size() * 4;
+        sensor_msgs::PointCloud2::Ptr result_cloud_msg(new sensor_msgs::PointCloud2);
+        pcl::toROSMsg(*points_XYZI, *result_cloud_msg);
+        result_cloud_msg->header.stamp = ros::Time::now();
+        result_cloud_msg->header.frame_id = "rslidar";
+        result_cloud_msg->height = 1;//number_of_velodyne;
+        result_cloud_msg->width = lidar_X.size(); //lidar_X.size() * 4 / number_of_velodyne;
+        result_cloud_msg->fields[0].name = "x";
+        result_cloud_msg->fields[0].offset = 0;
+        result_cloud_msg->fields[0].datatype = 7;
+        result_cloud_msg->fields[0].count = 1; //lidar_X.size();
+        result_cloud_msg->fields[1].name = "y";
+        result_cloud_msg->fields[1].offset = 4;
+        result_cloud_msg->fields[1].datatype = 7;
+        result_cloud_msg->fields[1].count = 1; //lidar_Y.size();
+        result_cloud_msg->fields[2].name = "z";
+        result_cloud_msg->fields[2].offset = 8;
+        result_cloud_msg->fields[2].datatype = 7;
+        result_cloud_msg->fields[2].count = 1; //lidar_Z.size();
+        result_cloud_msg->fields[3].name = "intensity";
+        result_cloud_msg->fields[3].offset = 16;
+        result_cloud_msg->fields[3].datatype = 7;
+        result_cloud_msg->fields[3].count = 1; //lidar_I.size();
+        result_cloud_msg->point_step = 32;
+        result_cloud_msg->row_step = lidar_X.size() * result_cloud_msg->point_step;
+        result_cloud_msg->is_dense = false;
 
-        lidar_pub.publish(result_cloud_msg);
+        lidar_pub.publish(*result_cloud_msg);
         // printf("push back!!");
         // sleep(1);
+
+        // std::cout << "Hellooo!!" << std::endl;
+        // pcl::PointCloud<pcl::PointXYZ>::Ptr scan(new pcl::PointCloud<pcl::PointXYZ>);
+        // pcl::fromROSMsg(*result_cloud_msg, *scan);
+
     }
 
 int main(int argc, char **argv)
@@ -279,7 +287,7 @@ int main(int argc, char **argv)
 
         lidar.analysis_lidar(data);
 
-        host.udp_send(data, sizeof(data));
+        // host.udp_send(data, sizeof(data));
     }
 
     return 0;
